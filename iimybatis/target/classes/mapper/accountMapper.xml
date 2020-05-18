@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peter.mapper.AccountMapper">
+  <cache></cache>
+  <select id="findAll" resultType="com.peter.model.Account">
+    select * from account;
+  </select>
+  <select id="findById" parameterType="java.lang.Long" resultType="com.peter.model.Account">
+    select * from account where id = #{id};
+  </select>
+  <select id="findByUsername" parameterType="java.lang.String" resultType="com.peter.model.Account">
+    select * from account where username = #{username}
+  </select>
+  <select id="findByUsernameAndAge" resultType="com.peter.model.Account">
+    select * from account where username = #{arg0} and age = #{arg1}
+  </select>
+  <select id="findByAccount" resultType="com.peter.model.Account">
+    select * from account
+    <trim prefix="where" prefixOverrides="and">
+      <choose>
+        <when test="id != null">
+          id = #{id}
+        </when>
+        <when test="username != null">
+          and username = #{username}
+        </when>
+        <when test="age != 0">
+          and age = #{age}
+        </when>
+      </choose>
+    </trim>
+  </select>
+  <select id="findCount" resultType="int">
+    select count(id) from account;
+  </select>
+  <select id="findUsernameById" parameterType="long" resultType="java.lang.String">
+    select username from account where id = #{id};
+  </select>
+  <select id="findAgeById" parameterType="long" resultType="java.lang.Integer">
+    select age from account where id = #{id};
+  </select>
+  <update id="updateAccount" parameterType="com.peter.model.Account">
+    update account
+    <set>
+      <if test="username != null">
+        username = #{username},
+      </if>
+      <if test="age != 0">
+        age = #{age}
+      </if>
+    </set>
+  </update>
+  <insert id="insertAccount" parameterType="com.peter.model.Account">
+    insert into account(username, password, age) value (#{username}, #{password}, #{age});
+  </insert>
+  <delete id="deleteAccount" parameterType="long">
+    delete from account where id = #{id};
+  </delete>
+  <select id="findByIds" parameterType="long" resultType="com.peter.model.Account">
+    select * from account
+    <where>
+      <foreach collection="ids" open="id in (" close=")" item="id" separator=",">
+        #{id}
+      </foreach>
+    </where>
+  </select>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peter.mapper.StudentLazyMapper">
+  <resultMap id="studentLazyMap" type="com.peter.model.Student">
+    <id column="id" property="id"></id>
+    <result column="name" property="name"></result>
+    <!-- 如果存在cid字段则继续查询classes表-->
+    <association property="classes" javaType="com.peter.model.Classes" select="com.peter.mapper.ClassesMapper.findById" column="cid"></association>
+  </resultMap>
+
+  <select id="findById" parameterType="long" resultMap="studentLazyMap">
+    select * from student where id = #{id};
+  </select>
+  <select id="findLazyById" parameterType="long" resultMap="studentLazyMap">
+    select id, name from student where id = #{id};
+  </select>
+
+</mapper>
